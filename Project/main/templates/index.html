@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Главная{% endblock title %}
+{% block content %}
+<h1>Убийца Spotify</h1>
+<ul>
+    {% for g in genres1 %}
+        <li>{{g.name_ru}}</li>
+    {% empty %}
+        <p>Нет жанров.</p>
+    {% endfor %}
+</ul>
+{% endblock content %}
