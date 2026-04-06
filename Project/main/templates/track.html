@@ -1,6 +1,21 @@
 {% extends "base.html" %}
 {% block title %}Песни{% endblock title %}
+
 {% block content %}
+
+<form method="post">
+    {% csrf_token %}
+    <select name="artist" onchange="this.form.submit()">
+        {% for artist in artists %}
+            {% if artist.id == current_artist.id %}
+                <option value="{{ artist.id }}" selected>{{ artist.name }}</option>
+            {% else %}
+                <option value="{{ artist.id }}">{{ artist.name }}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+</form>
+
 <table>
     <thead>
         <tr>
@@ -8,28 +23,30 @@
             <th>Название</th>
             <th>Продолжительность</th>
             <th>Жанр</th>
-            <th>Редакт</th>
+            <th>Исполнитель</th>
+            <th>Редактирование</th>
             <th>Удаление</th>
         </tr>
     </thead>
     <tbody>
         {% for t in track1 %}
         <tr>
-            
-            <td>{{t.id}}</td>
-            <td>{{t.title}}</td>
-            <td>{{t.duration}}</td>
+            <td>{{ t.id }}</td>
+            <td>{{ t.title }}</td>
+            <td>{{ t.duration }}</td>
             <td>
                 {% for g in t.genre.all %}
-                {{g.name_ru}}
-                {% if not forloop.last %}, {% endif %}
+                    {{ g.name_ru }}{% if not forloop.last %}, {% endif %}
                 {% endfor %}
             </td>
-                <td><a href="/edit_track/{{t.id}}/">Редактировать</a></td>
-                <td><a href="/delete_track/{{t.id}}/">Удалить</a></td>
+            <td>{{ t.artist.name }}</td>
+            <td><a href="/edit_track/{{ t.id }}/">Редактировать</a></td>
+            <td><a href="/delete_track/{{ t.id }}/">Удалить</a></td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
-<a href="/add_track">Добавить трек</a>
+
+<a href="/add_track/">Добавить трек</a>
+
 {% endblock content %}

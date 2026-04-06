@@ -12,8 +12,22 @@ def genres (request):
     return render (request, 'genres.html', {'genres1': genres1})
 
 def track(request):
-    track1 = Track.objects.all()
-    return render (request, 'track.html', {'track1': track1})
+    tracks = Track.objects.all()
+    artists = Artist.objects.all()
+    artist = None
+    
+    if request.method == "POST":
+        id_artist = request.POST.get('artist')
+        if id_artist:
+            artist = Artist.objects.get(id=id_artist)
+            tracks = Track.objects.filter(artist=artist)
+    
+    return render(request, 'track.html', {
+        'track1': tracks,
+        'artists': artists,
+        'current_artist': artist
+    })
+    
 
 def delete(request, id_genres):
     genres = Genres.objects.get(id=id_genres)
@@ -70,3 +84,23 @@ def edit_track(request, id_track):
 def artists(request):
     a = Artist.objects.all()
     return render(request, 'artists.html', {'artists': a})
+
+def add_artist(request):
+    if request.method == "POST":
+        artists_form = ArtistForm(request.POST, request.FILES)
+        if artists_form.is_valid():
+            artists_form.save()
+            return redirect('artists/')
+    else:
+        artists_form = ArtistForm()
+    return render(request, "add_artist.html", {'form': artists_form})
+
+# def trackList(request):
+#     tracks = Track.objects.all()
+#     artists = Artist.objects.all()
+#     artist = None
+#     if request.method == "POST":
+#          id_artist = request.POST.get('artist')
+#          artist = Artist.objects.get(id=id_artist)
+#          tracks = Track.objects.filter(artist=artist)
+#     return render(request, 'tracks.html', {'tracks': tracks, 'artists': artists, 'current_artist': artist})
